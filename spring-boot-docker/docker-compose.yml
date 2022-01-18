@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  spring-boot-docker:
+    image: spring-boot-docker.jar
+    #mem_limit: 700m
+    ports:
+      - "9090:8080"
+    networks:
+      - spring-boot-docker-network
+
+networks:
+  spring-boot-docker-network:
