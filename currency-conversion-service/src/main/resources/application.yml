@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: currency-conversion
+  config:
+    import: optional:configserver:http://localhost:8888  
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1.0 # trace every request 0.05 = 5% of requests    
+  zipkin:
+    enabled: true
+    base-url: http://192.168.99.100:9411/  
+    
+server:
+  port: 8100    
+
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://localhost:8761/eureka    
