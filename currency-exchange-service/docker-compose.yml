@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  naming-server:
+    image: docker-discovery-server.jar
+    ports:
+      - "8761:8761"   
+    networks:
+      - currency-network
+      
+  currency-exchange-service:
+    image: docker-currency-exchange-service.jar
+    #mem_limit: 700m
+    ports:
+      - "8000:8000"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      
+  currency-conversion:
+    image: docker-currency-conversion-service.jar
+    #mem_limit: 700m
+    ports:
+      - "8100:8100"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      
+  api-gateway:
+    image: docker-api-gateway.jar
+    ports:
+      - "8765:8765"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      
+  #docker run -p 9411:9411 openzipkin/zipkin:2.23
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    #mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - currency-network
+    restart: always #Restart if there is a problem starting up      
+
+networks:
+  currency-network:
