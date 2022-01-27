@@ -1,4 +1,0 @@
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672 # not same as rabbit management dashboard. This is for publishing to RabbitMQ
